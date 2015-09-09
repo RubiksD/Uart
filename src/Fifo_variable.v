@@ -146,7 +146,50 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 	 begin
 		if(Reset == 0)
 			Fifo_Status <= 0;
-		else
-			Fifo_Status <= Fifo_Status_In;
+		else begin
+			case(Diff)
+				0: begin
+					if((Read == 0) && (Write == 1))
+						Fifo_Status <= `Fifo_AEmpty;
+					else
+						Fifo_Status <= `Fifo_Empty | `Fifo_AEmpty;
+				end
+				1: begin
+					if((Read == 0) && (Write == 1))
+						Fifo_Status <= 0;
+					else if((Read == 1) && (Write == 0))
+						Fifo_Status <= `Fifo_Empty | `Fifo_AEmpty;
+					else
+						Fifo_Status <= `Fifo_AEmpty;
+				end
+				2: begin
+					if((Read == 1) && (Write == 0))
+						Fifo_Status <= `Fifo_AEmpty;
+					else
+						Fifo_Status <= 0;
+				end
+				(Fifo_Depth-2): begin
+					if((Read == 0) && (Write == 1))
+						Fifo_Status <= `Fifo_AFull ;
+					else
+						Fifo_Status <= 0;
+				end
+				(Fifo_Depth-1): begin
+					if((Read == 0) && (Write == 1))
+						Fifo_Status <= `Fifo_AFull | `Fifo_Full;
+					else if((Read == 1) && (Write == 0))
+						Fifo_Status <= 0;
+					else
+						Fifo_Status <= `Fifo_AFull;
+				end
+				Fifo_Depth:  begin
+					if((Read == 1) && (Write == 0))
+						Fifo_Status <= `Fifo_AFull;
+					else
+						Fifo_Status <= `Fifo_AFull | `Fifo_Full;
+				end
+			default: Fifo_Status <= 0;
+		endcase
+		end
 	 end
 endmodule
