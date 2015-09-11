@@ -79,12 +79,12 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 	reg Write_Shift;
 	reg Read_Shift;
 	reg Read_En;
-	reg [3:0]Fifo_Status_In;
+//	reg [3:0]Fifo_Status_In;
 	wire [7:0]Data_Out_in;
 	wire [(Addr_Width-1):0]Diff;
 	
 	Data_ram D1(Clk, Reset, Data_In, Data_Out_in, Read & Read_En, Write, Write_Ptr, Read_Ptr);
-	assign Diff = Write_Ptr - Read_Ptr;
+	assign Diff = (Reset == 0)? 0 :(Write_Ptr - Read_Ptr);
 	
 	 always @(negedge Clk )
 	 begin
@@ -105,7 +105,7 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 		 end
 		 else begin
 			 if( Read == 1)	 begin
-				 if( !(Fifo_Status_In & `Fifo_Empty)) begin
+				 if( !(Fifo_Status & `Fifo_Empty)) begin
 					 Read_En = 1;
 					 Read_Ptr <= Read_Ptr + 1;
 				 end else	 begin
@@ -128,6 +128,7 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 		end
 
 	end	
+	/*
 	 always @(Diff or Reset)
 	 begin
 		if (Reset == 0)
@@ -141,7 +142,7 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 			default: Fifo_Status_In = 0;
 		endcase
 	 end
-	 
+	 */
 	 always @(negedge Clk)
 	 begin
 		if(Reset == 0)
