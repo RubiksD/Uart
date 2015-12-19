@@ -12,3 +12,6 @@ Commit Number:4
 
 Commit Number:5
 	-Started on top
+
+Commit Number:5
+	-Started on control regs
