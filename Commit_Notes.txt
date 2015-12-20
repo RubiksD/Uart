@@ -15,3 +15,6 @@ Commit Number:5
 
 Commit Number:5
 	-Started on control regs
+
+Commit Number:5
+	-Control registers update
