@@ -12,12 +12,15 @@ module Control_reg.v(
 	Num_stop_bits,
 	oversample_by_3,
 	
+	fifo_status,
+	data_valid,
+	intr
 
 );
 
 parameter CNTRL0 = 4'd0;
-parameter DATA_REG = 4'd4;
-parameter CNTRL0 = 4'd0;
+parameter DATA_REG = 4'd8;
+parameter CNTRL1 = 4'd4;
 
 input wire clk;
 input wire reset_n;
@@ -55,6 +58,24 @@ begin
 			default:
 		endcase
 		end
+	end
+end
+
+always@(*)
+begin
+	if(cs & ~wen)
+	begin
+		case(addr[3:0])
+		CNTRL1:
+		begin
+			rdata = {fifo_status,data_valid,intr};
+		end
+		default: rdata = {32{1'b0}};
+		endcase
+	end
+	else
+	begin
+		rdata = {32{1'b0}};
 	end
 end
 
