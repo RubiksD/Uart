@@ -21,9 +21,16 @@
 // Additional Comments:
 // 
 ////////////////////////////////////////////////////////////////////////////////
-
+`include "uart_defines.v"
 module test;
 
+initial
+begin
+$dumpfile("fifo_test.vcd");
+//$dumpvars(0,memory_wrapper_tb);
+$dumpvars;
+#3000 $finish;
+end
 	// Inputs
 	reg Clk;
 	reg Reset;
@@ -75,40 +82,86 @@ module test;
 		// Add stimulus here
 		
 		
-		#5
-		Reset = 1;
-		#10
-		Write = 1;
-		Data_In = 8'h5A;
-		#10
-		Data_In = 8'hA5;
-		#10
-		Write = 0;
-		Read = 1;
-		#10
-		Write = 1;
-		Data_In = 8'hDB;
-		#10
-		Data_In = 8'hF0;
-		#10
-		Data_In = 8'h0F;
-		#10
-		Read = 0;
-		#10
-		Data_In = 8'hC3;
-		#10
-		Data_In = 8'h3C;
-		#40
-		Write = 0;
-		Read = 1;
-		#100
-		Write = 1;
-		Data_In = 8'h87;
-		#10
-		Write = 0;
-		Read = 0;
+	//	#5
+	  	Reset = 1;
+	//	#10
+	//	Write = 1;
+	//	Data_In = 8'h5A;
+	//	#10
+	//	Data_In = 8'hA5;
+	//	#10
+	//	Write = 0;
+	//	Read = 1;
+	//	#10
+	//	Write = 1;
+	//	Data_In = 8'hDB;
+	//	#10
+	//	Data_In = 8'hF0;
+	//	#10
+	//	Data_In = 8'h0F;
+	//	#10
+	//	Read = 0;
+	//	#10
+	//	Data_In = 8'hC3;
+	//	#10
+	//	Data_In = 8'h3C;
+	//	#40
+	//	Write = 0;
+	//	Read = 1;
+	//	#100
+	//	Write = 1;
+	//	Data_In = 8'h87;
+	//	#10
+	//	Write = 0;
+	//	Read = 0;
 
 	end
-      
+
+	always @ (posedge Clk or negedge Reset)
+	begin
+		if(~Reset)
+		begin
+			Data_In <= 8'd0;
+			Write <= 1'd0;
+		end
+		else
+		begin
+			if(~Write) begin
+				if(~(Fifo_Status & `Fifo_AFull))begin
+					Write <= 1'd1;
+					Data_In <= Data_In + 8'd1;
+				end
+			end
+			else begin
+				if(Fifo_Status & `Fifo_Full)begin
+					Write <= 1'd0;
+				end
+				else begin
+					Data_In <= Data_In + 8'd1;
+				end
+			end
+		end
+	end
+wire test = (Fifo_Status & `Fifo_AEmpty) == 4'd0;
+	always @ (posedge Clk or negedge Reset)
+	begin
+		if(~Reset)
+		begin
+			Read <= 1'd0;
+		end
+		else
+		begin
+			if(~Read) begin
+				if((Fifo_Status & `Fifo_AEmpty) == 4'd0)begin
+					Read <= 1'd1;
+				end
+			end
+			else begin
+				if(Fifo_Status & `Fifo_Empty)begin
+					Read <= 1'd0;
+				end
+			end
+		end
+	end
 endmodule
 
