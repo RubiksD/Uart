@@ -25,5 +25,8 @@ Commit Number:7
 Commit Number:8
 	-Updated fifo testbench
 
-Commit Number:9
+Commit Number:
 	-Bug fix in fifo
+
+Commit Number:10
+	-Minor README update
