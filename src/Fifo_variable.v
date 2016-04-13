@@ -23,7 +23,7 @@
 module Data_ram (Clk, Reset, Data_In , Data_Out, Read, Write, Write_Ptr, Read_Ptr );
 	parameter ADDR_WIDTH = 4;
 	parameter DATA_WIDTH = 8;
-	parameter fifo_depth = 1 << ADDR_WIDTH;
+	parameter FIFO_DEPTH = 1 << ADDR_WIDTH;
 	integer i;
 
 	input Clk;
@@ -36,7 +36,7 @@ module Data_ram (Clk, Reset, Data_In , Data_Out, Read, Write, Write_Ptr, Read_Pt
 
 	output reg [(DATA_WIDTH-1):0]Data_Out;
 	
-	reg [(DATA_WIDTH-1):0]mem[0:(fifo_depth-1)];
+	reg [(DATA_WIDTH-1):0]mem[0:(FIFO_DEPTH-1)];
 	
 	always @(posedge Clk or negedge Reset)
 	begin
@@ -68,7 +68,7 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 	output wire [(DATA_WIDTH-1):0]Data_Out;
 
 	parameter ADDR_WIDTH = 4;
-	parameter Fifo_Depth = (1 << ADDR_WIDTH) - 1 ;
+	parameter FIFO_DEPTH = (1 << ADDR_WIDTH);
 	parameter DATA_WIDTH = 8;
 	parameter THRESHOLD  = 3;
 
@@ -86,12 +86,16 @@ module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
 	assign Fifo_AEmpty_St = (Diff < THRESHOLD);
 	assign Fifo_Empty_St  = (Diff == {(DATA_WIDTH+1){1'd0}});
 	assign Fifo_AFull_St = (Diff > THRESHOLD);
-	assign Fifo_Full_St = (Diff == {(DATA_WIDTH){1'd1}});
+	assign Fifo_Full_St = (Diff == {(4){1'd1}});
 	assign Diff = (Write_Ptr - Read_Ptr);
 	assign Fifo_Status = {Fifo_AEmpty_St,Fifo_AFull_St,Fifo_Full_St,Fifo_Empty_St};
 
 	
-	Data_ram D1(Clk, Reset, Data_In, Data_Out, Read , Write, Write_Ptr, Read_Ptr);
+	Data_ram 
+	#(.ADDR_WIDTH(ADDR_WIDTH),
+		.DATA_WIDTH(DATA_WIDTH),
+		.FIFO_DEPTH(FIFO_DEPTH))
+	D1(Clk, Reset, Data_In, Data_Out, Read , Write, Write_Ptr, Read_Ptr);
 	
 	 always @(posedge Clk or negedge Reset)
 	 begin

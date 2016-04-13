@@ -116,52 +116,65 @@ end
 	//	Read = 0;
 
 	end
-
-	always @ (posedge Clk or negedge Reset)
+   reg [1:0] Write_state;
+   
+always @ (posedge Clk or negedge Reset)
+begin
+	if(~Reset)
 	begin
-		if(~Reset)
-		begin
-			Data_In <= 8'd0;
-			Write <= 1'd0;
-		end
-		else
-		begin
-			if(~Write) begin
-				if(~(Fifo_Status & `Fifo_AFull))begin
-					Write <= 1'd1;
-					Data_In <= Data_In + 8'd1;
-				end
+		 Data_In <= 8'd0;
+		 Write <= 1'd0;
+     Write_state <= 2'd0;
+     
+	end
+	else	begin
+     Write <= 1'd0;
+     case(Write_state)
+       2'b0:begin
+          if((Fifo_Status & `Fifo_AFull) == 4'd0) begin
+             Write <= 1'b1;
+             Write_state <= 2'b1;
+          end
+          end
+       2'b1:begin
+             Write_state <= 2'd2;
+             Data_In <= Data_In + 1'd1;
+          end
+       2'd2:begin
+          if((Fifo_Status & `Fifo_Full) == `Fifo_Full) begin
+            Write_state <= 2'b0;
+          end
+          else begin
+             Write <= 1'b1;
+             Write_state <= 2'b1;
+             
+             end
+          end
+       2'd3:begin
+       end
+     endcase // case (Write_state)
+     
+	end
+end
+always @ (posedge Clk or negedge Reset)
+begin
+	if(~Reset)
+	begin
+		Read <= 1'd0;
+	end
+	else
+	begin
+		if(~Read) begin
+			if((Fifo_Status & `Fifo_Full) == `Fifo_Full)begin
+				Read <= 1'd1;
 			end
-			else begin
-				if(Fifo_Status & `Fifo_Full)begin
-					Write <= 1'd0;
-				end
-				else begin
-					Data_In <= Data_In + 8'd1;
-				end
+		end
+		else begin
+			if(Fifo_Status & `Fifo_Empty)begin
+				Read <= 1'd0;
 			end
 		end
 	end
-wire test = (Fifo_Status & `Fifo_AEmpty) == 4'd0;
-	always @ (posedge Clk or negedge Reset)
-	begin
-		if(~Reset)
-		begin
-			Read <= 1'd0;
-		end
-		else
-		begin
-			if(~Read) begin
-				if((Fifo_Status & `Fifo_AEmpty) == 4'd0)begin
-					Read <= 1'd1;
-				end
-			end
-			else begin
-				if(Fifo_Status & `Fifo_Empty)begin
-					Read <= 1'd0;
-				end
-			end
-		end
-	end
+end
+ 
 endmodule
-

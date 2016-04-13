@@ -24,3 +24,6 @@ Commit Number:7
 
 Commit Number:8
 	-Updated fifo testbench
+
+Commit Number:9
+	-Bug fix in fifo
