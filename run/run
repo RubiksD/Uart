@@ -1,0 +1,5 @@
+rm *.vvp
+export UART_PROJ_PATH=..
+iverilog -o uart_top.vvp -I ../include -c uart_top_files_list
+vvp uart_top.vvp
+

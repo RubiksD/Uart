@@ -26,7 +26,7 @@ module test;
 
 initial
 begin
-$dumpfile("fifo_test.vcd");
+$dumpfile("uart_test.vcd");
 //$dumpvars(0,memory_wrapper_tb);
 $dumpvars;
 #3000 $finish;
@@ -43,16 +43,26 @@ end
 	wire [3:0] Fifo_Status;
 
 	// Instantiate the Unit Under Test (UUT)
-	Fifo  uut (
-		.Clk(Clk), 
-		.Reset(Reset), 
-		.Data_In(Data_In), 
-		.Data_Out(Data_Out), 
-		.Read(Read), 
-		.Write(Write), 
-		.Fifo_Status(Fifo_Status)
+	Uart uart_uut(
+		.clk(Clk),
+		.reset_n(Reset),
+		
+	  .TX(),
+	  .RX(1'b1),
+
+	  .fwdata(Data_In),
+	  .frdata(),
+	  .frstatus(),
+	  .fwstatus(Fifo_Status),
+	  .fwrite(Write),
+	  .fread(1'd0),
+
+	  .cs    (1'd0),
+	  .wen   (1'd0),
+	  .addr  (32'd0),
+	  .wdata (32'd0),
+	  .rdata ()
 	);
-	
 	
 	always
 	begin

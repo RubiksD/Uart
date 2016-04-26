@@ -1,2 +1,2 @@
-iverilog -o test_fifo.vvp -I ../include ../tb/test_fifo.v ../src/Fifo_variable.v
+iverilog -o test_fifo.vvp -I ../include ../tb/test_fifo.v ../src/Fifo.v
 vvp test_fifo.vvp

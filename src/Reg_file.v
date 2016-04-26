@@ -25,21 +25,21 @@ parameter CNTRL1 = 4'd4;
 parameter DATA_REG = 4'd8;
 
 
-input wire clk;
-input wire reset_n;
+   input wire clk;
+   input wire reset_n;
 
-input wire cs;
-input wire wen;
-input wire [31:0] addr;
-input wire [31:0] wdata;
-output reg [31:0]rdata;
+   input wire cs;
+   input wire wen;
+   input wire [31:0] addr;
+   input wire [31:0] wdata;
+   output reg [31:0]rdata;
 
-output reg [4:0]word_length;
-output reg Num_stop_bits;
-output reg oversample_by_3;
-output reg enable_uart;
+   output reg [4:0]word_length;
+   output reg Num_stop_bits;
+   output reg oversample_by_3;
+   output reg enable_uart;
    
-   input wire fifo_status;
+   input wire [7:0]fifo_status;
    input wire data_valid;
    input wire intr;
    
@@ -64,7 +64,7 @@ begin
 			oversample_by_3 <= wdata[6];
       enable_uart <= wdata[7];
 			end
-			default:
+			default: begin end
 		endcase
 		end
 	end
@@ -74,12 +74,12 @@ always@(*)
 begin
 	if(cs & ~wen)
 	begin
+		rdata = {32{1'b0}};
 		case(addr[3:0])
 		CNTRL1:
 		begin
-			rdata = {fifo_status,data_valid,intr};
+			rdata = {22'd0,fifo_status,data_valid,intr};
 		end
-		default: rdata = {32{1'b0}};
 		endcase
 	end
 	else

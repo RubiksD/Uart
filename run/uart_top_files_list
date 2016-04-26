@@ -1,0 +1,5 @@
+$(UART_PROJ_PATH)/src/Uart.v
+$(UART_PROJ_PATH)/src/Fifo.v
+$(UART_PROJ_PATH)/src/Reg_file.v
+$(UART_PROJ_PATH)/src/Uart_core.v
+$(UART_PROJ_PATH)/tb/test_uart.v

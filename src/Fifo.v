@@ -56,7 +56,7 @@ module Data_ram (Clk, Reset, Data_In , Data_Out, Read, Write, Write_Ptr, Read_Pt
 	
 endmodule
 
-module Fifo_variable( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
+module Fifo( Clk, Reset, Data_In , Data_Out, Read, Write, Fifo_Status
     );
 	input Clk;
 	input Reset;
