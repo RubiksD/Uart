@@ -33,3 +33,6 @@ Commit Number:10
 
 Commit Number:11
 	-Added basic TX with tb
+
+Commit Number:12
+	-Bug fix and improvement for TX mode

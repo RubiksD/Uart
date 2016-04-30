@@ -65,6 +65,7 @@ begin
 												if((frstatus & `Fifo_AEmpty) == 4'd0) begin
 													fread <= 1'b1;
 													tx_state <= `TX_WAIT_FOR_READ;
+													TX_Data[0] <= 1'd0;
 												end
 											end
 			`TX_WAIT_FOR_READ: begin
@@ -72,8 +73,8 @@ begin
 												tx_state <= `TX_LOAD_DATA;
 											end
 			`TX_LOAD_DATA : begin
-												TX_Data <= {1'd1,^frdata,frdata,1'd0};
-												TX_Counter <= 3'd0;
+												TX_Data[DATA_WIDTH+2:1] <= {1'd1,^frdata,frdata};
+												TX_Counter <= 3'd2;
 												TX_Bit_Count <= 4'd0;
 												tx_state <= `TX_TRANSMIT;
 											end
@@ -81,12 +82,13 @@ begin
 												TX_Counter <= (TX_Counter == 3'd2) ? 3'd0 : TX_Counter + 1'd1;
 												TX_Bit_Count <= (TX_Counter == 3'd2) ? TX_Bit_Count + 1'd1 : TX_Bit_Count ;
 												TX_Data <= (TX_Counter == 3'd2) ? {1'd1,TX_Data[DATA_WIDTH+2:1]} : TX_Data;
-												if((TX_Counter == 3'd2) && (TX_Bit_Count == (DATA_WIDTH+3)))begin
+												if((TX_Counter == 3'd2) && (TX_Bit_Count == (DATA_WIDTH+2)))begin
 													if((frstatus & `Fifo_Empty) == `Fifo_Empty) begin
 														tx_state <= `TX_STATE_IDLE;
 													end else begin
 														fread <= 1'd1;
 														tx_state <= `TX_WAIT_FOR_READ;
+														TX_Data[0] <= 1'd0;
 													end
 												end
 											end
